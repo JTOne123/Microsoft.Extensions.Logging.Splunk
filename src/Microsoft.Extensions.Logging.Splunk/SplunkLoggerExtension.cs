@@ -16,7 +16,7 @@ namespace Microsoft.Extensions.Logging.Splunk
                 throw new ArgumentNullException(nameof(environmentName));
             }
 
-            ILoggerProvider provider = new SplunkLoggerProvider((n, l, e) => l >= configuration.MinLevel, configuration, applicationName, environmentName);
+            ILoggerProvider provider = new SplunkLoggerProvider((n, l, e) => l >= configuration.MinLevel, configuration);
 
             factory.AddProvider(provider);
 
@@ -35,7 +35,7 @@ namespace Microsoft.Extensions.Logging.Splunk
                 throw new ArgumentNullException(nameof(environmentName));
             }
 
-            ILoggerProvider provider = new SplunkLoggerProvider(filter, configuration, applicationName, environmentName);
+            ILoggerProvider provider = new SplunkLoggerProvider(filter, configuration);
 
             factory.AddProvider(provider);
 

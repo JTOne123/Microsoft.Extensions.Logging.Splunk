@@ -1,7 +1,7 @@
-﻿using Splunk.Logging;
+﻿using Microsoft.Extensions.Logging.Internal;
+using Splunk.Logging;
 using System;
-using System.Dynamic;
-using System.Net;
+using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Logging.Splunk
 {
@@ -30,14 +30,14 @@ namespace Microsoft.Extensions.Logging.Splunk
             this.name = name;
 
             hecSender = new HttpEventCollectorSender(
-                configuration.ServerUrl,                                                                // Splunk HEC URL
-                configuration.Token,                                                                    // Splunk HEC token *GUID*
-                new HttpEventCollectorEventInfo.Metadata(null, null, "_json", "machinename"), // Metadata
-                HttpEventCollectorSender.SendMode.Sequential,                                           // Sequential sending to keep message in order
-                0,                                                                                      // BatchInterval - Set to 0 to disable
-                0,                                                                                      // BatchSizeBytes - Set to 0 to disable
-                0,                                                                                      // BatchSizeCount - Set to 0 to disable
-                new HttpEventCollectorResendMiddleware(configuration.RetriesOnError).Plugin             // Resend Middleware with retry
+                configuration.ServerUrl,                                                         // Splunk HEC URL
+                configuration.Token,                                                             // Splunk HEC token *GUID*
+                new HttpEventCollectorEventInfo.Metadata(null, null, "_json", GetMachineName()), // Metadata
+                HttpEventCollectorSender.SendMode.Sequential,                                    // Sequential sending to keep message in order
+                0,                                                                               // BatchInterval - Set to 0 to disable
+                0,                                                                               // BatchSizeBytes - Set to 0 to disable
+                0,                                                                               // BatchSizeCount - Set to 0 to disable
+                new HttpEventCollectorResendMiddleware(configuration.RetriesOnError).Plugin      // Resend Middleware with retry
             );
 
             hecSender.OnError += exception => 
@@ -60,12 +60,7 @@ namespace Microsoft.Extensions.Logging.Splunk
             get { return filter; }
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
-
-                filter = value;
+                filter = value ?? throw new ArgumentNullException(nameof(value));
             }
         }
 
@@ -112,6 +107,8 @@ namespace Microsoft.Extensions.Logging.Splunk
         /// <param name="formatter"></param>
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
+            string messageTemplate = null;
+
             if (!IsEnabled(logLevel, exception))
             {
                 return;
@@ -129,22 +126,53 @@ namespace Microsoft.Extensions.Logging.Splunk
             }
 
             // Build metaData
-            var metaData = new HttpEventCollectorEventInfo.Metadata(null, null, "_json", "machinename");
+            var metaData = new HttpEventCollectorEventInfo.Metadata(null, name, "_json", GetMachineName());
 
-            // Build dynamic properties object object
-            dynamic dynProperties = new ExpandoObject(); ;
+            // Build properties object
+            var properties = new Dictionary<String, object>();
+            
+            // Add standard values to properties
+            properties.Add("Source", name);
+            properties.Add("Host", GetMachineName());
 
-            dynProperties.Source = name;
+            // Add event id object if not default
+            if (eventId.Id != 0 || !string.IsNullOrEmpty(eventId.Name))
+            {
+                properties.Add("EventId", eventId);
+            }
 
+            // Add exception if it exists
             if (exception != null)
             {
-                
-                dynProperties.Exception = exception;
+                properties.Add("Exception", exception);
+            }
+
+            // Get properties from state
+            var structure = state as IEnumerable<KeyValuePair<string, object>>;
+            if (structure != null)
+            {
+                foreach (var item in structure)
+                {
+                    // Original format is a special field that shouldn't be added to the properties list
+                    if (item.Key == SplunkLoggerProvider.OriginalFormatPropertyName && item.Value is string)
+                    {
+                        messageTemplate = (string)item.Value;
+                    }
+                    else
+                    {
+                        properties.Add(item.Key, item.Value);
+                    }
+                }
             }
 
             // Send the event to splunk
-            hecSender.Send(Guid.NewGuid().ToString(), name, null, formatter(state, exception), dynProperties, metaData);
+            hecSender.Send(eventId.Id.ToString(), logLevel.ToString(), messageTemplate, formatter(state, exception), properties, metaData);
             hecSender.FlushSync();
+        }
+
+        private string GetMachineName()
+        {
+            return !string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("COMPUTERNAME")) ? System.Environment.GetEnvironmentVariable("COMPUTERNAME") : System.Net.Dns.GetHostName();
         }
     }
 }

@@ -7,7 +7,9 @@ namespace Microsoft.Extensions.Logging.Splunk
     /// </summary>
     public class SplunkLoggerProvider : ILoggerProvider
     {
-        private readonly string applicationName;
+        internal const string OriginalFormatPropertyName = "{OriginalFormat}";
+        internal const string ScopePropertyName = "Scope";
+
         private readonly SplunkConfiguration configuration;
         private readonly Func<string, LogLevel, Exception, bool> filter;
 

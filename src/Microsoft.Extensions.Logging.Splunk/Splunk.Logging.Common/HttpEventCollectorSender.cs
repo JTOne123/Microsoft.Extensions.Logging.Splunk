@@ -200,8 +200,8 @@ namespace Splunk.Logging
         /// </summary>
         /// <param name="id">Event id.</param>
         /// <param name="level">Event severity info.</param>
-        /// <param name="messageTemplate">Event message text.</param>
-        /// <param name="renderedMessage">Event message text.</param>
+        /// <param name="messageTemplate">Event message template.</param>
+        /// <param name="renderedMessage">Event message rendered.</param>
         /// <param name="properties">Additional event data.</param>
         /// <param name="metadataOverride">Metadata to use for this send.</param>
         public void Send(
@@ -225,8 +225,8 @@ namespace Splunk.Logging
         /// <param name="timestamp">Timestamp to use.</param>
         /// <param name="id">Event id.</param>
         /// <param name="level">Event level info.</param>
-        /// <param name="messageTemplate">Event message text.</param>
-        /// <param name="renderedMessage">Event message text.</param>
+        /// <param name="messageTemplate">Event message template.</param>
+        /// <param name="renderedMessage">Event message rendered.</param>
         /// <param name="properties">Additional event data.</param>
         /// <param name="metadataOverride">Metadata to use for this send.</param>
         public void Send(
