@@ -202,6 +202,7 @@ namespace Splunk.Logging
         /// <param name="level">Event severity info.</param>
         /// <param name="messageTemplate">Event message template.</param>
         /// <param name="renderedMessage">Event message rendered.</param>
+        /// <param name="exception">Event exception.</param>
         /// <param name="properties">Additional event data.</param>
         /// <param name="metadataOverride">Metadata to use for this send.</param>
         public void Send(
@@ -209,11 +210,12 @@ namespace Splunk.Logging
             string level = null,
             string messageTemplate = null,
             string renderedMessage = null,
+            object exception = null,
             object properties = null,
             HttpEventCollectorEventInfo.Metadata metadataOverride = null)
         {
             HttpEventCollectorEventInfo ei =
-                new HttpEventCollectorEventInfo(id, level, messageTemplate, renderedMessage, properties, metadataOverride ?? metadata);
+                new HttpEventCollectorEventInfo(id, level, messageTemplate, renderedMessage, exception, properties, metadataOverride ?? metadata);
 
             DoSerialization(ei);
         }
@@ -227,6 +229,7 @@ namespace Splunk.Logging
         /// <param name="level">Event level info.</param>
         /// <param name="messageTemplate">Event message template.</param>
         /// <param name="renderedMessage">Event message rendered.</param>
+        /// <param name="exception">Event exception.</param>
         /// <param name="properties">Additional event data.</param>
         /// <param name="metadataOverride">Metadata to use for this send.</param>
         public void Send(
@@ -235,11 +238,12 @@ namespace Splunk.Logging
             string level = null,
             string messageTemplate = null,
             string renderedMessage = null,
+            object exception = null,
             object properties = null,
             HttpEventCollectorEventInfo.Metadata metadataOverride = null)
         {
             HttpEventCollectorEventInfo ei =
-                new HttpEventCollectorEventInfo(timestamp, id, level, messageTemplate, renderedMessage, properties, metadataOverride ?? metadata);
+                new HttpEventCollectorEventInfo(timestamp, id, level, messageTemplate, renderedMessage, exception, properties, metadataOverride ?? metadata);
 
             DoSerialization(ei);
         }

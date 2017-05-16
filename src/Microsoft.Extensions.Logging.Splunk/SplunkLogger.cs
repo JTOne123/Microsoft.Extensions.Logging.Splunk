@@ -141,12 +141,6 @@ namespace Microsoft.Extensions.Logging.Splunk
                 properties.Add("EventId", eventId);
             }
 
-            // Add exception if it exists
-            if (exception != null)
-            {
-                properties.Add("Exception", exception);
-            }
-
             // Get properties from state
             var structure = state as IEnumerable<KeyValuePair<string, object>>;
             if (structure != null)
@@ -166,7 +160,7 @@ namespace Microsoft.Extensions.Logging.Splunk
             }
 
             // Send the event to splunk
-            hecSender.Send(eventId.Id.ToString(), logLevel.ToString(), messageTemplate, formatter(state, exception), properties, metaData);
+            hecSender.Send(eventId.Id.ToString(), logLevel.ToString(), messageTemplate, formatter(state, exception), exception, properties, metaData);
             hecSender.FlushSync();
         }
 

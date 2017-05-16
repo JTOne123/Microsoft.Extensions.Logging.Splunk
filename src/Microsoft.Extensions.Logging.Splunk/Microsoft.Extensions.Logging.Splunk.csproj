@@ -9,7 +9,7 @@
 
 Note(s): 
  - This package uses the Microsoft.Extensions.Logging namespace but is NOT an official Microsoft package.
- - Includes internal modifed code from Splunk.Logging.Common to work with .Net Standard / .Net Core</Description>
+ - Includes modifed code from Splunk.Logging.Common to work with .Net Standard / .Net Core</Description>
     <PackageProjectUrl>https://github.com/AlanBarber/Microsoft.Extensions.Logging.Splunk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/AlanBarber/Microsoft.Extensions.Logging.Splunk</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/AlanBarber/Microsoft.Extensions.Logging.Splunk/blob/master/LICENSE</PackageLicenseUrl>
@@ -17,7 +17,7 @@ Note(s):
     <PackageTags>splunk splunk-enterprise logging Microsoft.Extensions.Logging</PackageTags>
     <PackageReleaseNotes>Version 1.0.0
 - First publish to NuGet</PackageReleaseNotes>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.0</Version>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
   </PropertyGroup>
