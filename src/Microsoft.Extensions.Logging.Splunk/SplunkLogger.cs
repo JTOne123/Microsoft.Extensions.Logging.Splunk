@@ -44,12 +44,6 @@ namespace Microsoft.Extensions.Logging.Splunk
             {
                 throw new Exception($"SplunkLogger failed to send log event to Splunk server '{configuration.ServerUrl.Authority}' using token '{configuration.Token}'. Exception: {exception}");
             };
-
-            // If enabled will create callback to bypass ssl error checks for our server url
-            if (configuration.IgnoreSslErrors)
-            {
-                // TODO: add ssl error checker for .net core
-            }
         }
 
         /// <summary>

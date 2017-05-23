@@ -14,7 +14,6 @@ namespace ConsoleTestApp
                     ServerUrl = new Uri("http://localhost:8088"),
                     Token = "ED9F5A37-BE9A-4782-B5F7-B6E31AC369CA",
                     RetriesOnError = 0,
-                    IgnoreSslErrors = true,
                     MinLevel = LogLevel.Trace });
 
             ILogger logger = loggerFactory.CreateLogger<Program>();
