@@ -8,23 +8,41 @@ namespace ConsoleTestApp
     {
         static void Main(string[] args)
         {
+            // Setup a logger instance
             ILoggerFactory loggerFactory = new LoggerFactory()
                 .AddConsole()
-                .AddSplunk(new SplunkConfiguration() {
+                .AddSplunk(new SplunkConfiguration
+                {
                     ServerUrl = new Uri("http://localhost:8088"),
-                    Token = "ED9F5A37-BE9A-4782-B5F7-B6E31AC369CA",
+                    Token = "b9e45a2a-1093-4572-9a9d-2ef2baabafb5",
                     RetriesOnError = 0,
-                    MinLevel = LogLevel.Trace });
-
+                    MinLevel = LogLevel.Trace
+                });
             ILogger logger = loggerFactory.CreateLogger<Program>();
 
-            logger.LogInformation("This is a logging test message! {ID}", 10);
+            Console.WriteLine("Writting log messages...");
+            // Write a few messages
+            logger.LogTrace("This is a {errorTypeParam} log message", "trace");
+            logger.LogDebug("This is a {errorTypeParam} log message", "debug");
+            logger.LogInformation("This is an {errorTypeParam} log message", "information");
+            logger.LogWarning("This is a {errorTypeParam} log message", "warning");
+            logger.LogError("This is an {errorTypeParam} log message", "error");
+            logger.LogCritical("This is a {errorTypeParam} log message", "critical");
 
-            logger.LogError(0, new Exception("AUGH!!!"), "Lets try somemore {ID} {Name}", 10, "Alan", "asdf");
+            // Process an exception
+            try
+            {
+                throw new Exception();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Our pretend exception detected!");
+            }
 
-
-            Console.Write("Press any key to continue...");
+#if DEBUG
+            Console.Write("\nPress any key to continue...");
             Console.ReadKey();
+#endif
         }
     }
 }

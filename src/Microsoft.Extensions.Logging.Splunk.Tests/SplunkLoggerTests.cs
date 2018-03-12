@@ -14,7 +14,7 @@ namespace Microsoft.Extensions.Logging.Splunk.Tests
                 .AddSplunk(new SplunkConfiguration()
                 {
                     ServerUrl = new Uri("http://localhost:8088"),
-                    Token = "ED9F5A37-BE9A-4782-B5F7-B6E31AC369CA",
+                    Token = "b9e45a2a-1093-4572-9a9d-2ef2baabafb5",
                     RetriesOnError = 0,
                     MinLevel = LogLevel.Trace
                 });
