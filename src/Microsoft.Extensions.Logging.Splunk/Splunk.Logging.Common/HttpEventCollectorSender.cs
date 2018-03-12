@@ -61,7 +61,6 @@ namespace Splunk.Logging
         /// <summary>
         /// Post request delegate. 
         /// </summary>
-        /// <param name="request">HTTP request.</param>
         /// <returns>Server HTTP response.</returns>
         public delegate Task<HttpResponseMessage> HttpEventCollectorHandler(
             string token, List<HttpEventCollectorEventInfo> events);
@@ -69,7 +68,6 @@ namespace Splunk.Logging
         /// <summary>
         /// HTTP event collector middleware plugin.
         /// </summary>
-        /// <param name="request">HTTP request.</param>
         /// <param name="next">A handler that posts data to the server.</param>
         /// <returns>Server HTTP response.</returns>
         public delegate Task<HttpResponseMessage> HttpEventCollectorMiddleware(

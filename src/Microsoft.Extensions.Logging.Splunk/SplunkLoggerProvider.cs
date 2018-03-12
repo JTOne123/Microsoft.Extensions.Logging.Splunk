@@ -2,8 +2,8 @@
 
 namespace Microsoft.Extensions.Logging.Splunk
 {
+    /// <inheritdoc />
     /// <summary>
-    /// 
     /// </summary>
     public class SplunkLoggerProvider : ILoggerProvider
     {
@@ -24,8 +24,9 @@ namespace Microsoft.Extensions.Logging.Splunk
             this.configuration = configuration;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// Creates a new <see cref="ILogger"/> instance.
+        /// Creates a new <see cref="T:Microsoft.Extensions.Logging.ILogger" /> instance.
         /// </summary>
         /// <param name="categoryName">The category name for messages produced by the logger.</param>
         /// <returns></returns>
@@ -34,6 +35,7 @@ namespace Microsoft.Extensions.Logging.Splunk
             return new SplunkLogger(categoryName, filter, configuration);
         }
 
+        /// <inheritdoc />
         /// <summary>
         /// Dispose of the object
         /// </summary>

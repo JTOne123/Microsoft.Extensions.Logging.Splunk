@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Logging.Internal;
-using Splunk.Logging;
+﻿using Splunk.Logging;
 using System;
 using System.Collections.Generic;
 
 namespace Microsoft.Extensions.Logging.Splunk
 {
+    /// <inheritdoc />
     /// <summary>
-    /// 
     /// </summary>
     public class SplunkLogger : ILogger
     { 
@@ -20,8 +19,6 @@ namespace Microsoft.Extensions.Logging.Splunk
         /// </summary>
         /// <param name="name"></param>
         /// <param name="filter"></param>
-        /// <param name="environmentName"></param>
-        /// <param name="applicationName"></param>
         /// <param name="configuration"></param>
         public SplunkLogger(string name, Func<string, LogLevel, Exception, bool> filter, SplunkConfiguration configuration)
         {
@@ -39,11 +36,6 @@ namespace Microsoft.Extensions.Logging.Splunk
                 0,                                                                               // BatchSizeCount - Set to 0 to disable
                 new HttpEventCollectorResendMiddleware(configuration.RetriesOnError).Plugin      // Resend Middleware with retry
             );
-
-            hecSender.OnError += exception => 
-            {
-                throw new Exception($"SplunkLogger failed to send log event to Splunk server '{configuration.ServerUrl.Authority}' using token '{configuration.Token}'. Exception: {exception}");
-            };
         }
 
         /// <summary>
@@ -51,11 +43,8 @@ namespace Microsoft.Extensions.Logging.Splunk
         /// </summary>
         private Func<string, LogLevel, Exception, bool> Filter
         {
-            get { return filter; }
-            set
-            {
-                filter = value ?? throw new ArgumentNullException(nameof(value));
-            }
+            get => filter;
+            set => filter = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         /// <summary>
@@ -69,8 +58,8 @@ namespace Microsoft.Extensions.Logging.Splunk
             return null;
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="logLevel"></param>
         /// <returns></returns>
@@ -90,8 +79,8 @@ namespace Microsoft.Extensions.Logging.Splunk
             return Filter(name, logLevel, ex);
         }
 
+        /// <inheritdoc />
         /// <summary>
-        /// 
         /// </summary>
         /// <typeparam name="TState"></typeparam>
         /// <param name="logLevel"></param>
@@ -122,12 +111,12 @@ namespace Microsoft.Extensions.Logging.Splunk
             // Build metaData
             var metaData = new HttpEventCollectorEventInfo.Metadata(null, name, "_json", GetMachineName());
 
-            // Build properties object
-            var properties = new Dictionary<String, object>();
-            
-            // Add standard values to properties
-            properties.Add("Source", name);
-            properties.Add("Host", GetMachineName());
+            // Build properties object and add standard values
+            var properties = new Dictionary<String, object>
+            {
+                {"Source", name},
+                { "Host", GetMachineName()}
+            };
 
             // Add event id object if not default
             if (eventId.Id != 0 || !string.IsNullOrEmpty(eventId.Name))
@@ -136,8 +125,7 @@ namespace Microsoft.Extensions.Logging.Splunk
             }
 
             // Get properties from state
-            var structure = state as IEnumerable<KeyValuePair<string, object>>;
-            if (structure != null)
+            if (state is IEnumerable<KeyValuePair<string, object>> structure)
             {
                 foreach (var item in structure)
                 {
